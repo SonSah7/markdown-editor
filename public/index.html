@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer</title>
+    <link rel="stylesheet" href="style.css"> <!-- Optional -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.1.3/marked.min.js"></script>
+    <script>
+        const socket = io();
+
+        window.onload = function() {
+            const textarea = document.getElementById('markdown');
+            const preview = document.getElementById('preview');
+
+            textarea.addEventListener('input', function() {
+                const markdownText = textarea.value;
+                socket.emit('markdown', markdownText);
+            });
+
+            socket.on('markdown', function(msg) {
+                preview.innerHTML = marked(msg);
+            });
+        };
+    </script>
+</head>
+<body>
+    <div>
+        <h1>Real-time Markdown Viewer</h1>
+        <textarea id="markdown" rows="10" cols="50" placeholder="Type your markdown here..."></textarea>
+    </div>
+    <div>
+        <h2>Preview</h2>
+        <div id="preview" style="border: 1px solid #ccc; padding: 10px;"></div> <!-- Add some styles to preview -->
+    </div>
+</body>
+</html>
